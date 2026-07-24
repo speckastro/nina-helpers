@@ -136,7 +136,7 @@ namespace SpeckSequenceHelpers.Instructions {
 
             var radiusArcsec = ResolveMaxRadiusArcsec();
             if (!double.IsFinite(radiusArcsec) || radiusArcsec <= 0) {
-                throw new SequenceEntityFailedException("Dithered slew: dither radius unavailable - guider reports no pixel scale and no manual radius is set");
+                throw new SequenceEntityFailedException("Dithered slew: dither radius unavailable - check the guider pixel scale and profile dither amount, or enable the manual radius");
             }
 
             var offset = DitherOffsetCalculator.Generate(radiusArcsec, Random.Shared);
@@ -223,7 +223,7 @@ namespace SpeckSequenceHelpers.Instructions {
                 return double.IsFinite(ManualRadiusArcsec) && ManualRadiusArcsec > 0 ? ManualRadiusArcsec : 0;
             }
             var guiderInfo = guiderMediator.GetInfo();
-            if (guiderInfo?.Connected != true || guiderInfo.PixelScale <= 0) {
+            if (guiderInfo?.Connected != true || !double.IsFinite(guiderInfo.PixelScale) || guiderInfo.PixelScale <= 0) {
                 return 0;
             }
             var radius = profileService.ActiveProfile.GuiderSettings.DitherPixels * guiderInfo.PixelScale;
@@ -246,8 +246,13 @@ namespace SpeckSequenceHelpers.Instructions {
                 var guiderInfo = guiderMediator.GetInfo();
                 if (guiderInfo?.Connected != true) {
                     i.Add("Guider is not connected - connect a guider or enable the manual dither radius");
-                } else if (guiderInfo.PixelScale <= 0) {
+                } else if (!double.IsFinite(guiderInfo.PixelScale) || guiderInfo.PixelScale <= 0) {
                     i.Add("Guider does not report a pixel scale - enable the manual dither radius");
+                } else {
+                    var ditherPixels = profileService.ActiveProfile.GuiderSettings.DitherPixels;
+                    if (!double.IsFinite(ditherPixels) || ditherPixels <= 0) {
+                        i.Add("Profile guider dither amount is 0 - set dither pixels in the guider settings or enable the manual dither radius");
+                    }
                 }
             }
             if (CenterAfterSlew && !cameraMediator.GetInfo().Connected) {

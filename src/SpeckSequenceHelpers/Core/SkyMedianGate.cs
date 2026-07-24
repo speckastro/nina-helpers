@@ -34,6 +34,9 @@ namespace SpeckSequenceHelpers.Core {
         private readonly GateDirection direction;
 
         public SkyMedianGate(double minMedian, double maxMedian, GateDirection direction) {
+            if (!double.IsFinite(minMedian) || !double.IsFinite(maxMedian)) {
+                throw new ArgumentException($"Median thresholds must be finite (min: {minMedian}, max: {maxMedian})");
+            }
             if (minMedian >= maxMedian) {
                 throw new ArgumentException($"Min median ({minMedian}) must be less than max median ({maxMedian})");
             }

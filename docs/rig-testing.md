@@ -37,5 +37,5 @@ NINA (or build the project on that machine — the post-build step installs it).
 - [ ] Brightening, min above current median: loops with countdown status text between attempts;
       cancelling the sequence interrupts promptly mid-wait.
 - [ ] Brightening, max below current median: fails immediately with red notification.
-- [ ] Dimming, min above... max below current median (window overshot): fails immediately.
+- [ ] Dimming, min and max both above current median (sky already dimmer than the window): fails immediately.
 - [ ] Confirm no images from this instruction appear in the image save folder.

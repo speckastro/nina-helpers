@@ -204,13 +204,15 @@ namespace SpeckSequenceHelpers.Instructions {
             if (!cameraMediator.GetInfo().Connected) {
                 i.Add("Camera is not connected");
             }
-            if (MinMedian >= MaxMedian) {
+            if (!double.IsFinite(MinMedian) || !double.IsFinite(MaxMedian)) {
+                i.Add("Median thresholds must be finite numbers");
+            } else if (MinMedian >= MaxMedian) {
                 i.Add("Min median must be less than max median");
             }
-            if (ExposureTime <= 0) {
+            if (!double.IsFinite(ExposureTime) || ExposureTime <= 0) {
                 i.Add("Exposure time must be greater than 0");
             }
-            if (IntervalSeconds < 0) {
+            if (!double.IsFinite(IntervalSeconds) || IntervalSeconds < 0) {
                 i.Add("Interval must be 0 or greater");
             }
             Issues = i;
