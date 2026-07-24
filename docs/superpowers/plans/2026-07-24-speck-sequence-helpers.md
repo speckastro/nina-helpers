@@ -1632,6 +1632,8 @@ jobs:
           dotnet-version: 8.0.x
       - name: Build
         run: dotnet build SpeckSequenceHelpers.sln -c Release
+      - name: Format check
+        run: dotnet format SpeckSequenceHelpers.sln --verify-no-changes
       - name: Test
         run: dotnet test tests/SpeckSequenceHelpers.Core.Tests -c Release --no-build
       - name: Upload plugin DLL
@@ -1720,6 +1722,76 @@ Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>"
 ```
 
 ---
+
+### Task 10: Code hygiene enforcement (added 2026-07-24 at user request; execute after Task 7, before Task 8)
+
+**Files:**
+- Create: `.editorconfig`
+- Create: `Directory.Build.props`
+- Modify: whatever `dotnet format` and the analyzers flag (document each fix)
+
+**Interfaces:**
+- Consumes: the full codebase from Tasks 1–7.
+- Produces: an enforceable style/lint baseline — `dotnet format SpeckSequenceHelpers.sln --verify-no-changes` and `dotnet build` (warnings-as-errors) both pass; Task 8's CI includes the format gate; the controller runs the format check before every subsequent commit.
+
+- [ ] **Step 1: Create `.editorconfig`**
+
+```ini
+root = true
+
+[*]
+charset = utf-8
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+[*.{csproj,props,targets,json,yml,yaml}]
+indent_size = 2
+
+[*.cs]
+# NINA-style: braces on the same line
+csharp_new_line_before_open_brace = none
+csharp_new_line_before_else = false
+csharp_new_line_before_catch = false
+csharp_new_line_before_finally = false
+csharp_new_line_before_members_in_object_initializers = false
+csharp_new_line_before_members_in_anonymous_types = false
+
+# usings sorted alphabetically, System NOT first (matches the NINA plugin convention used here)
+dotnet_sort_system_directives_first = false
+
+csharp_style_var_for_built_in_types = true:suggestion
+csharp_style_var_when_type_is_apparent = true:suggestion
+csharp_style_var_elsewhere = true:suggestion
+```
+
+- [ ] **Step 2: Create `Directory.Build.props`** (root — applies to both projects)
+
+```xml
+<Project>
+  <PropertyGroup>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <WarningsNotAsErrors>NU1701</WarningsNotAsErrors>
+  </PropertyGroup>
+</Project>
+```
+
+(NU1701 is the known NINA legacy-transitive-package restore warning — exempted, everything else fails the build.)
+
+- [ ] **Step 3: Format sweep**
+
+Run: `dotnet format SpeckSequenceHelpers.sln 2>&1 | tail -5` then `dotnet format SpeckSequenceHelpers.sln --verify-no-changes && echo FORMAT-CLEAN`
+Expected: `FORMAT-CLEAN`. Review what the first run changed — it should be whitespace/using-order only.
+
+- [ ] **Step 4: Analyzer sweep**
+
+Run: `dotnet build SpeckSequenceHelpers.sln -v q 2>&1 | tail -15`
+Expected: `0 Error(s)` after fixing any analyzer findings. Fix findings properly (not by suppression); a rule may be downgraded in `.editorconfig` only with a written justification in the report. Then `dotnet test tests/SpeckSequenceHelpers.Core.Tests -v q` → 28/28.
+
+- [ ] **Step 5: Controller commits after dual review** (message: `Add .editorconfig, analyzers, and format enforcement`)
 
 ## Plan self-review notes
 
