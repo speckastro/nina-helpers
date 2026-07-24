@@ -26,7 +26,7 @@ csharp_style_var_for_built_in_types = true:suggestion
 csharp_style_var_when_type_is_apparent = true:suggestion
 csharp_style_var_elsewhere = true:suggestion
 
-# CA1010 (Task 10 downgrade - see task-10-report.md): NINA XAML resource-dictionary partial classes
+# CA1010 (Task 10 downgrade): NINA XAML resource-dictionary partial classes
 # (e.g. [Export(typeof(ResourceDictionary))] partial class : ResourceDictionary) inherit ResourceDictionary's
 # non-generic ICollection through the WPF framework base type. There is no generic collection to implement
 # without abandoning the ResourceDictionary/MEF export pattern the NINA plugin host requires, so this is not
@@ -34,7 +34,7 @@ csharp_style_var_elsewhere = true:suggestion
 [src/SpeckSequenceHelpers/**/*.xaml.cs]
 dotnet_diagnostic.CA1010.severity = none
 
-# CA1707 (Task 10 downgrade - see task-10-report.md): xUnit test methods use the widely-adopted
+# CA1707 (Task 10 downgrade): xUnit test methods use the widely-adopted
 # MethodUnderTest_Scenario_ExpectedBehavior underscore convention for readability; renaming to remove
 # underscores would only reduce test-name clarity with no behavior or maintainability benefit. Scoped to
 # the test project only - production API members must still follow CA1707.

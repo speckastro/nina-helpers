@@ -163,6 +163,9 @@ namespace SpeckSequenceHelpers.Instructions {
             if (ItemUtility.RetrieveContextCoordinates(Parent) == null) {
                 i.Add("No target found - place this instruction inside a target container");
             }
+            if (!double.IsFinite(ToleranceDegrees) || ToleranceDegrees < 0) {
+                i.Add("Tolerance must be 0 or greater");
+            }
             Issues = i;
             return i.Count == 0;
         }
