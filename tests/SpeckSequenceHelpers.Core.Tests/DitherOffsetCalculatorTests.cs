@@ -1,5 +1,5 @@
-using System;
 using SpeckSequenceHelpers.Core;
+using System;
 using Xunit;
 
 namespace SpeckSequenceHelpers.Core.Tests {
@@ -44,6 +44,13 @@ namespace SpeckSequenceHelpers.Core.Tests {
         [Fact]
         public void Generate_NegativeRadius_Throws() {
             Assert.Throws<ArgumentOutOfRangeException>(() => DitherOffsetCalculator.Generate(-1, new Random(7)));
+        }
+
+        [Fact]
+        public void Generate_NegativeZeroRadius_Throws() {
+            // -0.0 carries the IEEE sign bit: ThrowIfNegative deliberately treats it as negative.
+            // Unreachable from the instructions (their radius guards reject <= 0 first); pinned as the API contract.
+            Assert.Throws<ArgumentOutOfRangeException>(() => DitherOffsetCalculator.Generate(-0.0, new Random(7)));
         }
     }
 }

@@ -80,7 +80,7 @@ namespace SpeckSequenceHelpers.Instructions {
             };
         }
 
-        private bool useManualRadius = false;
+        private bool useManualRadius;
 
         [JsonProperty]
         public bool UseManualRadius {
@@ -102,7 +102,7 @@ namespace SpeckSequenceHelpers.Instructions {
             }
         }
 
-        private bool centerAfterSlew = false;
+        private bool centerAfterSlew;
 
         [JsonProperty]
         public bool CenterAfterSlew {

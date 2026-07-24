@@ -1,5 +1,5 @@
-using System;
 using SpeckSequenceHelpers.Core;
+using System;
 using Xunit;
 
 namespace SpeckSequenceHelpers.Core.Tests {
