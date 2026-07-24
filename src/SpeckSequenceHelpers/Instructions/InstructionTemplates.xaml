@@ -31,4 +31,27 @@
     <DataTemplate x:Key="SpeckSequenceHelpers.Instructions.DitheredSlew_Mini">
         <mini:MiniSequenceItem />
     </DataTemplate>
+
+    <GeometryGroup x:Key="Speck_CheckRotation_SVG">
+        <PathGeometry Figures="M 9,1 A 8,8 0 1 1 1.6,6 M 1.6,6 L 0,1.5 M 1.6,6 L 6,4.5" />
+        <EllipseGeometry Center="9,9" RadiusX="2" RadiusY="2" />
+    </GeometryGroup>
+
+    <DataTemplate DataType="{x:Type local:CheckRotation}">
+        <nina:SequenceBlockView>
+            <nina:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="Tolerance (°)" />
+                    <TextBox MinWidth="40" Margin="5,0,0,0" TextAlignment="Right" Text="{Binding ToleranceDegrees}" />
+                    <CheckBox VerticalAlignment="Center" Margin="15,0,0,0" IsChecked="{Binding TreatFlippedAsEqual}" />
+                    <TextBlock VerticalAlignment="Center" Margin="5,0,0,0" Text="Treat 180° flip as equal" />
+                    <TextBlock VerticalAlignment="Center" Margin="15,0,0,0" FontStyle="Italic" Text="{Binding LastMeasurement}" />
+                </StackPanel>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
+    <DataTemplate x:Key="SpeckSequenceHelpers.Instructions.CheckRotation_Mini">
+        <mini:MiniSequenceItem />
+    </DataTemplate>
 </ResourceDictionary>
