@@ -11,9 +11,12 @@ A [N.I.N.A.](https://nighttime-imaging.eu/) 3.x plugin with three advanced-seque
   and compares the measured position angle against the parent target's position angle. In
   tolerance: an info notification with the measurement. Out of tolerance: the instruction fails
   (red notification; the sequence continues). Moves neither mount nor rotator.
-- **Wait for sky median** — repeatedly takes throwaway exposures (never saved) and waits until
-  the image median enters a configured ADU range. Direction-aware for dawn (Brightening) or dusk
-  (Dimming) flats; fails when the brightness window is overshot.
+- **Wait for sky brightness** — repeatedly takes throwaway exposures (never saved) and waits
+  until the histogram mean reaches a target, within tolerance. Target and tolerance are
+  entered as percentages exactly like NINA's flat wizard ("Histogram Mean Target" / "Mean
+  Tolerance"), and the instruction shows the equivalent ADU window for the connected camera.
+  Direction-aware for dawn (Brightening) or dusk (Dimming) flats; fails when the brightness
+  window is overshot.
 
 All three instructions appear under the **Speck Sequence Helpers** category in the advanced sequencer.
 
