@@ -54,4 +54,40 @@
     <DataTemplate x:Key="SpeckSequenceHelpers.Instructions.CheckRotation_Mini">
         <mini:MiniSequenceItem />
     </DataTemplate>
+
+    <GeometryGroup x:Key="Speck_WaitForSkyMedian_SVG">
+        <PathGeometry Figures="M 2,16 L 2,10 L 5,10 L 5,16 Z M 7,16 L 7,3 L 10,3 L 10,16 Z M 12,16 L 12,7 L 15,7 L 15,16 Z" />
+        <PathGeometry Figures="M 0,18 L 17,18" />
+    </GeometryGroup>
+
+    <DataTemplate DataType="{x:Type local:WaitForSkyMedian}">
+        <nina:SequenceBlockView>
+            <nina:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="Direction" />
+                    <ComboBox Margin="5,0,0,0"
+                              ItemsSource="{Binding Source={x:Static local:WaitForSkyMedian.DirectionChoices}}"
+                              SelectedItem="{Binding Direction}" />
+                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="Exposure (s)" />
+                    <TextBox MinWidth="35" Margin="5,0,0,0" TextAlignment="Right" Text="{Binding ExposureTime}" />
+                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="Gain" />
+                    <TextBox MinWidth="35" Margin="5,0,0,0" TextAlignment="Right" Text="{Binding Gain}" />
+                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="Offset" />
+                    <TextBox MinWidth="35" Margin="5,0,0,0" TextAlignment="Right" Text="{Binding Offset}" />
+                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="Bin" />
+                    <TextBox MinWidth="25" Margin="5,0,0,0" TextAlignment="Right" Text="{Binding Binning}" />
+                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="Interval (s)" />
+                    <TextBox MinWidth="35" Margin="5,0,0,0" TextAlignment="Right" Text="{Binding IntervalSeconds}" />
+                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="Median min" />
+                    <TextBox MinWidth="50" Margin="5,0,0,0" TextAlignment="Right" Text="{Binding MinMedian}" />
+                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="max" />
+                    <TextBox MinWidth="50" Margin="5,0,0,0" TextAlignment="Right" Text="{Binding MaxMedian}" />
+                </StackPanel>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
+    <DataTemplate x:Key="SpeckSequenceHelpers.Instructions.WaitForSkyMedian_Mini">
+        <mini:MiniSequenceItem />
+    </DataTemplate>
 </ResourceDictionary>
