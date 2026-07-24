@@ -1,0 +1,33 @@
+using System.Reflection;
+using System.Runtime.InteropServices;
+
+[assembly: Guid("c66fa242-868a-47c0-ad62-54d3439af382")]
+
+[assembly: AssemblyVersion("1.0.0.1")]
+[assembly: AssemblyFileVersion("1.0.0.1")]
+
+[assembly: AssemblyTitle("Speck Sequence Helpers")]
+[assembly: AssemblyDescription("Advanced sequencer helpers: dithered slews for mosaic panel cycling, plate-solved rotation checks, and sky-median gating for flats")]
+
+[assembly: AssemblyCompany("Speck Astro")]
+[assembly: AssemblyProduct("Speck Sequence Helpers")]
+[assembly: AssemblyCopyright("Copyright © 2026 Speck Astro")]
+
+[assembly: AssemblyMetadata("MinimumApplicationVersion", "3.2.0.9001")]
+
+[assembly: AssemblyMetadata("License", "MPL-2.0")]
+[assembly: AssemblyMetadata("LicenseURL", "https://www.mozilla.org/en-US/MPL/2.0/")]
+[assembly: AssemblyMetadata("Repository", "https://github.com/speckastro/nina-helpers")]
+
+[assembly: AssemblyMetadata("Tags", "Sequencer,Mosaic,Dither,Rotation,Flats")]
+[assembly: AssemblyMetadata("ChangelogURL", "https://github.com/speckastro/nina-helpers/blob/main/CHANGELOG.md")]
+[assembly: AssemblyMetadata("FeaturedImageURL", "")]
+[assembly: AssemblyMetadata("ScreenshotURL", "")]
+[assembly: AssemblyMetadata("AltScreenshotURL", "")]
+[assembly: AssemblyMetadata("LongDescription", @"Three advanced sequencer instructions:
+
+* Dithered slew - slew to the parent target with a small random offset, so rapid mosaic panel cycling needs no separate dither. Offset amplitude comes from your guider dither settings automatically, or a manual radius. Optional plate-solve centering on the offset coordinates.
+* Check rotation - plate solve and compare the measured position angle against the target's position angle. Reports the measurement unobtrusively; fails the instruction if a configured tolerance is exceeded.
+* Wait for sky median - repeatedly take throwaway exposures until the image median enters a configured range. Designed for dawn/dusk sky flats; fails if the brightness window is overshot.")]
+
+[assembly: ComVisible(false)]
