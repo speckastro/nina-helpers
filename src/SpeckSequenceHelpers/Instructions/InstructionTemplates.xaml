@@ -5,4 +5,30 @@
     xmlns:local="clr-namespace:SpeckSequenceHelpers.Instructions"
     xmlns:nina="clr-namespace:NINA.View.Sequencer;assembly=NINA.Sequencer"
     xmlns:mini="clr-namespace:NINA.View.Sequencer.MiniSequencer;assembly=NINA.Sequencer">
+
+    <GeometryGroup x:Key="Speck_DitheredSlew_SVG">
+        <EllipseGeometry Center="9,9" RadiusX="8" RadiusY="8" />
+        <EllipseGeometry Center="9,9" RadiusX="0.8" RadiusY="0.8" />
+        <EllipseGeometry Center="13.5,5.5" RadiusX="1.6" RadiusY="1.6" />
+        <PathGeometry Figures="M 9,9 L 12.5,6.5" />
+    </GeometryGroup>
+
+    <DataTemplate DataType="{x:Type local:DitheredSlew}">
+        <nina:SequenceBlockView>
+            <nina:SequenceBlockView.SequenceItemContent>
+                <StackPanel Orientation="Horizontal">
+                    <CheckBox VerticalAlignment="Center" IsChecked="{Binding UseManualRadius}" />
+                    <TextBlock VerticalAlignment="Center" Margin="5,0,0,0" Text="Manual radius (arcsec)" />
+                    <TextBox MinWidth="40" Margin="5,0,0,0" TextAlignment="Right"
+                             Text="{Binding ManualRadiusArcsec}" IsEnabled="{Binding UseManualRadius}" />
+                    <CheckBox VerticalAlignment="Center" Margin="15,0,0,0" IsChecked="{Binding CenterAfterSlew}" />
+                    <TextBlock VerticalAlignment="Center" Margin="5,0,0,0" Text="Center after slew" />
+                </StackPanel>
+            </nina:SequenceBlockView.SequenceItemContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
+    <DataTemplate x:Key="SpeckSequenceHelpers.Instructions.DitheredSlew_Mini">
+        <mini:MiniSequenceItem />
+    </DataTemplate>
 </ResourceDictionary>
