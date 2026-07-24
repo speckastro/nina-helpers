@@ -55,18 +55,18 @@
         <mini:MiniSequenceItem />
     </DataTemplate>
 
-    <GeometryGroup x:Key="Speck_WaitForSkyMedian_SVG">
+    <GeometryGroup x:Key="Speck_WaitForSkyBrightness_SVG">
         <PathGeometry Figures="M 2,16 L 2,10 L 5,10 L 5,16 Z M 7,16 L 7,3 L 10,3 L 10,16 Z M 12,16 L 12,7 L 15,7 L 15,16 Z" />
         <PathGeometry Figures="M 0,18 L 17,18" />
     </GeometryGroup>
 
-    <DataTemplate DataType="{x:Type local:WaitForSkyMedian}">
+    <DataTemplate DataType="{x:Type local:WaitForSkyBrightness}">
         <nina:SequenceBlockView>
             <nina:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock VerticalAlignment="Center" Text="Direction" />
                     <ComboBox Margin="5,0,0,0"
-                              ItemsSource="{Binding Source={x:Static local:WaitForSkyMedian.DirectionChoices}}"
+                              ItemsSource="{Binding Source={x:Static local:WaitForSkyBrightness.DirectionChoices}}"
                               SelectedItem="{Binding Direction}" />
                     <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="Exposure (s)" />
                     <TextBox MinWidth="35" Margin="5,0,0,0" TextAlignment="Right" Text="{Binding ExposureTime}" />
@@ -78,16 +78,17 @@
                     <TextBox MinWidth="25" Margin="5,0,0,0" TextAlignment="Right" Text="{Binding Binning}" />
                     <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="Interval (s)" />
                     <TextBox MinWidth="35" Margin="5,0,0,0" TextAlignment="Right" Text="{Binding IntervalSeconds}" />
-                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="Median min" />
-                    <TextBox MinWidth="50" Margin="5,0,0,0" TextAlignment="Right" Text="{Binding MinMedian}" />
-                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="max" />
-                    <TextBox MinWidth="50" Margin="5,0,0,0" TextAlignment="Right" Text="{Binding MaxMedian}" />
+                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="Target (%)" />
+                    <TextBox MinWidth="35" Margin="5,0,0,0" TextAlignment="Right" Text="{Binding TargetPercent}" />
+                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="Tolerance (%)" />
+                    <TextBox MinWidth="35" Margin="5,0,0,0" TextAlignment="Right" Text="{Binding TolerancePercent}" />
+                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" FontStyle="Italic" Text="{Binding AduSummary}" />
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
     </DataTemplate>
 
-    <DataTemplate x:Key="SpeckSequenceHelpers.Instructions.WaitForSkyMedian_Mini">
+    <DataTemplate x:Key="SpeckSequenceHelpers.Instructions.WaitForSkyBrightness_Mini">
         <mini:MiniSequenceItem />
     </DataTemplate>
 </ResourceDictionary>
