@@ -59,8 +59,8 @@ is unchanged.
 
 ### ADU label (advisory display)
 
-A read-only, non-persisted row label shows the equivalent window, e.g.
-`≈ 32,768 ± 3,277 ADU (16-bit)`:
+A read-only, non-persisted row label shows the target and the equivalent accepted window, e.g.
+`≈ 32,768 ADU, accepting 29,491 - 36,045 (16-bit)`:
 
 - Bit depth from the connected camera's reported info; when no camera is connected, show a
   "connect camera for ADU values" placeholder instead of guessing.
