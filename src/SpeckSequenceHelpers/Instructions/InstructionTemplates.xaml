@@ -6,29 +6,45 @@
     xmlns:nina="clr-namespace:NINA.View.Sequencer;assembly=NINA.Sequencer"
     xmlns:mini="clr-namespace:NINA.View.Sequencer.MiniSequencer;assembly=NINA.Sequencer">
 
-    <GeometryGroup x:Key="Speck_DitheredSlew_SVG">
+    <GeometryGroup x:Key="Speck_DitheredSlewAndCenter_SVG">
         <EllipseGeometry Center="9,9" RadiusX="8" RadiusY="8" />
         <EllipseGeometry Center="9,9" RadiusX="0.8" RadiusY="0.8" />
         <EllipseGeometry Center="13.5,5.5" RadiusX="1.6" RadiusY="1.6" />
         <PathGeometry Figures="M 9,9 L 12.5,6.5" />
     </GeometryGroup>
 
-    <DataTemplate DataType="{x:Type local:DitheredSlew}">
+    <DataTemplate DataType="{x:Type local:DitheredSlewAndCenter}">
         <nina:SequenceBlockView>
             <nina:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <CheckBox VerticalAlignment="Center" IsChecked="{Binding UseManualRadius}" />
+                    <TextBlock VerticalAlignment="Center" Text="RA" />
+                    <TextBox MinWidth="28" Margin="5,0,0,0" TextAlignment="Right" Text="{Binding Coordinates.RAHours}" />
+                    <TextBlock VerticalAlignment="Center" Margin="2,0,0,0" Text="h" />
+                    <TextBox MinWidth="28" Margin="2,0,0,0" TextAlignment="Right" Text="{Binding Coordinates.RAMinutes}" />
+                    <TextBlock VerticalAlignment="Center" Margin="2,0,0,0" Text="m" />
+                    <TextBox MinWidth="34" Margin="2,0,0,0" TextAlignment="Right" Text="{Binding Coordinates.RASeconds}" />
+                    <TextBlock VerticalAlignment="Center" Margin="2,0,0,0" Text="s" />
+
+                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="Dec" />
+                    <CheckBox VerticalAlignment="Center" Margin="5,0,0,0" IsChecked="{Binding Coordinates.NegativeDec}" />
+                    <TextBlock VerticalAlignment="Center" Margin="2,0,0,0" Text="-" />
+                    <TextBox MinWidth="28" Margin="5,0,0,0" TextAlignment="Right" Text="{Binding Coordinates.DecDegrees}" />
+                    <TextBlock VerticalAlignment="Center" Margin="2,0,0,0" Text="°" />
+                    <TextBox MinWidth="28" Margin="2,0,0,0" TextAlignment="Right" Text="{Binding Coordinates.DecMinutes}" />
+                    <TextBlock VerticalAlignment="Center" Margin="2,0,0,0" Text="'" />
+                    <TextBox MinWidth="34" Margin="2,0,0,0" TextAlignment="Right" Text="{Binding Coordinates.DecSeconds}" />
+                    <TextBlock VerticalAlignment="Center" Margin="2,0,0,0" Text="&quot;" />
+
+                    <CheckBox VerticalAlignment="Center" Margin="15,0,0,0" IsChecked="{Binding UseManualRadius}" />
                     <TextBlock VerticalAlignment="Center" Margin="5,0,0,0" Text="Manual radius (arcsec)" />
                     <TextBox MinWidth="40" Margin="5,0,0,0" TextAlignment="Right"
                              Text="{Binding ManualRadiusArcsec}" IsEnabled="{Binding UseManualRadius}" />
-                    <CheckBox VerticalAlignment="Center" Margin="15,0,0,0" IsChecked="{Binding CenterAfterSlew}" />
-                    <TextBlock VerticalAlignment="Center" Margin="5,0,0,0" Text="Center after slew" />
                 </StackPanel>
             </nina:SequenceBlockView.SequenceItemContent>
         </nina:SequenceBlockView>
     </DataTemplate>
 
-    <DataTemplate x:Key="SpeckSequenceHelpers.Instructions.DitheredSlew_Mini">
+    <DataTemplate x:Key="SpeckSequenceHelpers.Instructions.DitheredSlewAndCenter_Mini">
         <mini:MiniSequenceItem />
     </DataTemplate>
 
