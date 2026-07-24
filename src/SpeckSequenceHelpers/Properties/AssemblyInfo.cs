@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion("1.0.0.1")]
 
 [assembly: AssemblyTitle("Speck Sequence Helpers")]
-[assembly: AssemblyDescription("Advanced sequencer helpers: dithered slews for mosaic panel cycling, plate-solved rotation checks, and sky-median gating for flats")]
+[assembly: AssemblyDescription("Advanced sequencer helpers: dithered slews for mosaic panel cycling, plate-solved rotation checks, and histogram-mean gating for flats")]
 
 [assembly: AssemblyCompany("Speck Astro")]
 [assembly: AssemblyProduct("Speck Sequence Helpers")]
@@ -28,6 +28,6 @@ using System.Runtime.InteropServices;
 
 * Dithered slew - slew to the parent target with a small random offset, so rapid mosaic panel cycling needs no separate dither. Offset amplitude comes from your guider dither settings automatically, or a manual radius. Optional plate-solve centering on the offset coordinates.
 * Check rotation - plate solve and compare the measured position angle against the target's position angle. Reports the measurement unobtrusively; fails the instruction if a configured tolerance is exceeded.
-* Wait for sky median - repeatedly take throwaway exposures until the image median enters a configured range. Designed for dawn/dusk sky flats; fails if the brightness window is overshot.")]
+* Wait for sky brightness - repeatedly take throwaway exposures until the histogram mean reaches your target, within tolerance. Target and tolerance are entered as percentages just like the flat wizard, and the equivalent ADU window is shown. Designed for dawn/dusk sky flats; fails if the brightness window is overshot.")]
 
 [assembly: ComVisible(false)]
