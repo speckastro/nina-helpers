@@ -80,8 +80,10 @@ A read-only, non-persisted row label shows the equivalent window, e.g.
 ### Validation
 
 Camera connected; `TargetPercent` finite and in (0, 100]; `TolerancePercent` finite and in
-[0, 100); exposure/interval checks unchanged. Non-finite hardening conventions from the
-parent spec are preserved.
+**(0, 100]** — strictly positive, because a zero tolerance collapses the window to a single
+ADU value, which the gate rejects (`min < max` invariant) and which no real exposure would
+ever hit exactly. Exposure/interval checks unchanged. Non-finite hardening conventions from
+the parent spec are preserved.
 
 ### Documentation ripples
 
