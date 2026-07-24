@@ -144,6 +144,25 @@ Gates the sequence on measured sky brightness — designed for dawn/dusk sky fla
   sky tests for rotation/median).
 - **CI (once remote exists):** GitHub Actions `windows-latest` build + full test run.
 
+## Implementation notes (post-review amendments, 2026-07-24)
+
+Three deliberate deviations from the text above, adjudicated during the final
+whole-branch review:
+
+1. **Coordinate projection is delegated to NINA, not implemented in `Core/`.**
+   `DitherOffsetCalculator` generates a tangent-plane offset vector; the instruction applies
+   it via NINA's `Coordinates.Shift` (gnomonic projection), which handles the cos(dec)
+   correction, RA wrap, and pole proximity with NINA's own battle-tested WCS math (the same
+   code path the framing assistant uses). Reimplementing spherical trigonometry in `Core/`
+   solely to unit-test it on Linux would test code the plugin doesn't ship.
+2. **"No plate solver configured" is not a validation issue on Check Rotation.** NINA's own
+   `Center`/`Solve and rotate` instructions do not validate solver configuration either —
+   there is no reliable API for it; an unconfigured solver surfaces as a solve failure at
+   execution, which this instruction reports as a failed check.
+3. **Dithered Slew's parked-mount error shows a toast** even though the instruction's normal
+   feedback is toast-free — this mirrors NINA's built-in `Slew to Ra/Dec` behavior verbatim,
+   and built-in parity wins for error surfaces.
+
 ## To verify during implementation (API details, not design questions)
 
 - Exact property names/types: `GuiderSettings.DitherPixels`, guider pixel-scale property,

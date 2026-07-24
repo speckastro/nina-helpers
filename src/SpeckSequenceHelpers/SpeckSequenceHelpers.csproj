@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <OutputType>Library</OutputType>
+    <RootNamespace>SpeckSequenceHelpers</RootNamespace>
+    <AssemblyName>SpeckSequenceHelpers</AssemblyName>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWPF>true</UseWPF>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="NINA.Plugin" Version="3.2.0.9001" />
+  </ItemGroup>
+  <Target Name="DeployToNina" AfterTargets="PostBuildEvent" Condition="'$(OS)' == 'Windows_NT' and '$(CI)' != 'true'">
+    <Exec Command="xcopy &quot;$(TargetPath)&quot; &quot;%localappdata%\NINA\Plugins\3.0.0\$(TargetName)&quot; /h/i/c/k/e/r/y" />
+  </Target>
+</Project>
