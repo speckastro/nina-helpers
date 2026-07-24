@@ -2,11 +2,12 @@
 
 A [N.I.N.A.](https://nighttime-imaging.eu/) 3.x plugin with three advanced-sequencer instructions:
 
-- **Dithered slew** — slews to the parent target's coordinates plus a small random offset, so
-  rapid mosaic panel cycling gets its dither "for free" instead of paying for a separate guider
-  dither after every slew. The offset radius is derived automatically from your guider dither
-  settings (dither pixels × guider pixel scale), or set manually. Optional plate-solve centering
-  on the offset coordinates.
+- **Dithered slew and center** — NINA's Center with one difference: the target is displaced by
+  a small random offset every run, so rapid mosaic panel cycling gets its dither "for free"
+  instead of paying for a separate guider dither after every slew. The offset radius is
+  derived automatically from your guider dither settings (dither pixels × guider pixel scale),
+  or set manually. It builds on NINA's Center: the same centering solver and profile settings,
+  the same plate-solve status window, and the same guiding stop/restart and dome sync.
 - **Check rotation** — takes a plate-solve exposure (using your profile's plate-solve settings)
   and compares the measured position angle against the parent target's position angle. In
   tolerance: an info notification with the measurement. Out of tolerance: the instruction fails
