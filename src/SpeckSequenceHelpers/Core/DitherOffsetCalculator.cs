@@ -21,8 +21,8 @@ namespace SpeckSequenceHelpers.Core {
         /// r = R*sqrt(u) makes the distribution uniform by area rather than clustered at the center.
         /// </summary>
         public static OffsetVector Generate(double maxRadiusArcsec, Random random) {
-            if (maxRadiusArcsec < 0) { throw new ArgumentOutOfRangeException(nameof(maxRadiusArcsec)); }
-            if (random == null) { throw new ArgumentNullException(nameof(random)); }
+            ArgumentOutOfRangeException.ThrowIfNegative(maxRadiusArcsec);
+            ArgumentNullException.ThrowIfNull(random);
 
             var radius = maxRadiusArcsec * Math.Sqrt(random.NextDouble());
             var theta = 2d * Math.PI * random.NextDouble();
