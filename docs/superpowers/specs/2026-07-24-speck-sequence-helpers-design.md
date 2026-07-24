@@ -99,6 +99,11 @@ A pure measurement — moves neither mount nor rotator.
 
 ## Instruction 3: Wait For Sky Median
 
+> **Superseded (2026-07-24, pre-release):** revised into *Wait For Sky Brightness* —
+> histogram-mean-target + tolerance percentages with flat-wizard parity. See
+> `2026-07-24-wait-for-sky-brightness-design.md`. The direction/overshoot gate semantics
+> below still apply.
+
 Gates the sequence on measured sky brightness — designed for dawn/dusk sky flats.
 
 - **Config:** exposure time (s), gain, offset, binning (filter = whatever is currently
