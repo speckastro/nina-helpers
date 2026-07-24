@@ -98,13 +98,13 @@ namespace SpeckSequenceHelpers.Instructions {
                 throw new SequenceEntityFailedException("Dithered slew and center: dither radius unavailable - check the guider pixel scale and profile dither amount, or enable the manual radius");
             }
             if (ResolveBaseCoordinates() == null) {
-                throw new SequenceEntityFailedException("Dithered slew and center: no coordinates to dither around");
+                throw new SequenceEntityFailedException("Dithered slew and center: no target coordinates found - place this instruction inside a target container");
             }
             await base.Execute(progress, token);
         }
 
         /// <summary>
-        /// Centres on the parent target (or the typed coordinates) displaced by a fresh random
+        /// Centres on the parent target's coordinates displaced by a fresh random
         /// offset. This deliberately does not delegate to <see cref="Center.DoCenter"/>: the base
         /// reads and rewrites the bindable <see cref="Center.Coordinates"/>, so aiming it at the
         /// dithered position would mean mutating serialized state for the whole centring run and
@@ -165,12 +165,9 @@ namespace SpeckSequenceHelpers.Instructions {
             return await solver.Center(seq, parameter, PlateSolveStatusVM.Progress, progress, token);
         }
 
-        /// <summary>The un-dithered target: the parent container's when inherited, else the typed coordinates.</summary>
+        /// <summary>The un-dithered target: the parent container's coordinates.</summary>
         private Coordinates ResolveBaseCoordinates() {
-            if (Inherited) {
-                return ItemUtility.RetrieveContextCoordinates(Parent)?.Coordinates;
-            }
-            return Coordinates?.Coordinates;
+            return ItemUtility.RetrieveContextCoordinates(Parent)?.Coordinates;
         }
 
         /// <summary>Max dither radius in arcseconds; 0 when unresolvable.</summary>
@@ -189,6 +186,9 @@ namespace SpeckSequenceHelpers.Instructions {
         public override bool Validate() {
             var valid = base.Validate();
             var i = new List<string>(Issues);
+            if (ItemUtility.RetrieveContextCoordinates(Parent) == null) {
+                i.Add("No target coordinates found - place this instruction inside a target container");
+            }
             if (UseManualRadius) {
                 if (!double.IsFinite(ManualRadiusArcsec) || ManualRadiusArcsec <= 0) {
                     i.Add("Manual dither radius must be greater than 0");
