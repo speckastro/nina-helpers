@@ -36,8 +36,8 @@ guider reporting a pixel scale or "manual radius" ticked.
 - [ ] With PHD2 connected **and actively guiding** before the item runs: guiding stops before
       the slew and resumes after, exactly as with the built-in Center. (Starting from a
       not-guiding state proves nothing — the base only restarts guiding it actually stopped.)
-- [ ] Outside a target container, with coordinates typed into the row and manual radius ticked:
-      it centers on those coordinates plus the offset.
+- [ ] Outside a target container: validation reports "No target coordinates found - place
+      this instruction inside a target container", and the item refuses to run.
 - [ ] **While centering is still running**, save the sequence to a file, then open that file: the
       item's coordinates must be the undithered originals with "inherited" still set. Saving
       after the run finishes would not catch a regression here — the point is that the dithered

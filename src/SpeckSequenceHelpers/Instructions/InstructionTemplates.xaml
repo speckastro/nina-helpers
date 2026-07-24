@@ -17,25 +17,7 @@
         <nina:SequenceBlockView>
             <nina:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock VerticalAlignment="Center" Text="RA" />
-                    <TextBox MinWidth="28" Margin="5,0,0,0" TextAlignment="Right" Text="{Binding Coordinates.RAHours}" />
-                    <TextBlock VerticalAlignment="Center" Margin="2,0,0,0" Text="h" />
-                    <TextBox MinWidth="28" Margin="2,0,0,0" TextAlignment="Right" Text="{Binding Coordinates.RAMinutes}" />
-                    <TextBlock VerticalAlignment="Center" Margin="2,0,0,0" Text="m" />
-                    <TextBox MinWidth="34" Margin="2,0,0,0" TextAlignment="Right" Text="{Binding Coordinates.RASeconds}" />
-                    <TextBlock VerticalAlignment="Center" Margin="2,0,0,0" Text="s" />
-
-                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="Dec" />
-                    <CheckBox VerticalAlignment="Center" Margin="5,0,0,0" IsChecked="{Binding Coordinates.NegativeDec}" />
-                    <TextBlock VerticalAlignment="Center" Margin="2,0,0,0" Text="-" />
-                    <TextBox MinWidth="28" Margin="5,0,0,0" TextAlignment="Right" Text="{Binding Coordinates.DecDegrees}" />
-                    <TextBlock VerticalAlignment="Center" Margin="2,0,0,0" Text="°" />
-                    <TextBox MinWidth="28" Margin="2,0,0,0" TextAlignment="Right" Text="{Binding Coordinates.DecMinutes}" />
-                    <TextBlock VerticalAlignment="Center" Margin="2,0,0,0" Text="'" />
-                    <TextBox MinWidth="34" Margin="2,0,0,0" TextAlignment="Right" Text="{Binding Coordinates.DecSeconds}" />
-                    <TextBlock VerticalAlignment="Center" Margin="2,0,0,0" Text="&quot;" />
-
-                    <CheckBox VerticalAlignment="Center" Margin="15,0,0,0" IsChecked="{Binding UseManualRadius}" />
+                    <CheckBox VerticalAlignment="Center" IsChecked="{Binding UseManualRadius}" />
                     <TextBlock VerticalAlignment="Center" Margin="5,0,0,0" Text="Manual radius (arcsec)" />
                     <TextBox MinWidth="40" Margin="5,0,0,0" TextAlignment="Right"
                              Text="{Binding ManualRadiusArcsec}" IsEnabled="{Binding UseManualRadius}" />
