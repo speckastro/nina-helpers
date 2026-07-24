@@ -4,9 +4,10 @@ Copy `src/SpeckSequenceHelpers/bin/Debug/net8.0-windows/SpeckSequenceHelpers.dll
 `%localappdata%\NINA\Plugins\3.0.0\SpeckSequenceHelpers\` on the imaging machine and restart
 NINA (or build the project on that machine — the post-build step installs it).
 
-If you saved any sequences against the earlier pre-release "Wait for sky median" instruction,
-NINA will show them as an unknown instruction after this rename — delete it and add "Wait for
-sky brightness" in its place. This is a one-time, pre-release break.
+If you saved any sequences against the earlier pre-release instructions, NINA will show them as
+unknown instructions after these renames — delete and re-add them. "Wait for sky median" is now
+"Wait for sky brightness"; "Dithered slew" is now "Dithered slew and center". This is a
+one-time, pre-release break.
 
 ## Load
 
@@ -16,15 +17,38 @@ sky brightness" in its place. This is a one-time, pre-release break.
       with icons, and can be added, saved to a sequence file, reloaded, and duplicated
       (settings survive save/reload — exercises JSON round-trip and Clone).
 
-## Dithered slew (simulator or sky)
+## Dithered slew and center (sky; mount + camera + plate solver required)
 
-- [ ] Outside a target container: validation issue "No target coordinates found...".
-- [ ] Guider disconnected + auto radius: validation issue mentioning manual radius; enabling
-      manual radius clears it.
-- [ ] In a target container with mount connected: executes, log line shows offset within the
-      expected radius; repeated runs show varying offsets; mount lands near target.
-- [ ] With PHD2 connected: guiding stops before the slew and resumes after.
-- [ ] "Center after slew" on: plate-solve centering runs and converges on offset coordinates.
+Every run needs a connected mount, camera and configured plate solver, plus either a connected
+guider reporting a pixel scale or "manual radius" ticked.
+
+- [ ] Guider disconnected with the automatic radius: validation reports the guider issue;
+      ticking "manual radius" clears it.
+- [ ] Inside a target container, manual radius 60": the plate-solve status window appears (as it
+      does for the built-in Center), centering converges, and the log line reports an offset
+      within 60".
+- [ ] Run it several times on the same panel: each run logs a different offset, and each solved
+      centre matches the panel's coordinates displaced by *that run's* logged offset. Do not
+      compare consecutive runs against each other — two independent draws inside the disc can
+      legitimately land almost on top of each other or nearly twice the radius apart.
+- [ ] Confirm the target container's own coordinates are unchanged after several runs — the
+      offsets must not accumulate.
+- [ ] With PHD2 connected **and actively guiding** before the item runs: guiding stops before
+      the slew and resumes after, exactly as with the built-in Center. (Starting from a
+      not-guiding state proves nothing — the base only restarts guiding it actually stopped.)
+- [ ] Outside a target container, with coordinates typed into the row and manual radius ticked:
+      it centers on those coordinates plus the offset.
+- [ ] **While centering is still running**, save the sequence to a file, then open that file: the
+      item's coordinates must be the undithered originals with "inherited" still set. Saving
+      after the run finishes would not catch a regression here — the point is that the dithered
+      position is never written to the item, not even mid-run.
+- [ ] With the telescope simulator parked and the guider simulator actively guiding: the run
+      fails immediately with a red notification **and guiding is still running afterwards** —
+      the parked check runs before guiding is stopped.
+- [ ] If you have a dome: connected, controllable, with dome-following disabled — confirm it
+      synchronises after the slew. If (and only if) you can force a sync failure — e.g. with the
+      dome simulator, or by disconnecting it mid-run — confirm the failure warns and the run
+      continues rather than aborting.
 
 ## Check rotation (sky, camera + solver required)
 
