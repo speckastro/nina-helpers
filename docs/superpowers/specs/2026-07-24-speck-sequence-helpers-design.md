@@ -60,6 +60,11 @@ measurement, imaging mediator + image statistics for median sampling.
 
 ## Instruction 1: Dithered Slew
 
+> **Superseded (2026-07-24, pre-release):** revised into *Dithered Slew And Center* — now
+> inherits NINA's `Center` and always centres, with no toggle. See
+> `2026-07-24-dithered-slew-and-center-design.md`. The offset-generation design below still
+> applies.
+
 Replaces "slew + separate dither" when cycling mosaic panels. Lives inside a target/panel
 container and reads base coordinates from the parent target (same mechanism as the
 built-in *Slew to target*).
