@@ -3,10 +3,28 @@ name: CI
 on:
   push:
     branches: [main]
+    tags: ['v*']
   pull_request:
+    branches: [main]
 
 jobs:
-  build-and-test:
+  linux-tests:
+    name: Linux build + tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Build (EnableWindowsTargeting)
+        run: dotnet build SpeckSequenceHelpers.sln -c Release -p:EnableWindowsTargeting=true
+      - name: Format check
+        run: dotnet format SpeckSequenceHelpers.sln --verify-no-changes
+      - name: Core tests
+        run: dotnet test tests/SpeckSequenceHelpers.Core.Tests -c Release --no-build
+
+  windows:
+    name: Windows tests + installer
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -15,12 +33,76 @@ jobs:
           dotnet-version: 8.0.x
       - name: Build
         run: dotnet build SpeckSequenceHelpers.sln -c Release
-      - name: Format check
-        run: dotnet format SpeckSequenceHelpers.sln --verify-no-changes
-      - name: Test
+      - name: Core tests
         run: dotnet test tests/SpeckSequenceHelpers.Core.Tests -c Release --no-build
-      - name: Upload plugin DLL
+      - name: Stage plugin folder
+        shell: pwsh
+        run: |
+          # Publish drags in NINA's whole dependency closure (NINA.*, ASCOM, Accord, OxyPlot, ...).
+          # N.I.N.A. loads those itself; a second copy in the plugin folder causes duplicate-type
+          # load errors. The plugin has no third-party dependencies of its own, so ship only ours.
+          $publish = Join-Path $env:RUNNER_TEMP 'publish'
+          dotnet publish src/SpeckSequenceHelpers/SpeckSequenceHelpers.csproj -c Release -r win-x64 --self-contained false -o $publish
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          New-Item -ItemType Directory -Force -Path 'artifacts/SpeckSequenceHelpers' | Out-Null
+          Copy-Item "$publish/SpeckSequenceHelpers.dll" 'artifacts/SpeckSequenceHelpers/' -ErrorAction Stop
+          Copy-Item "$publish/SpeckSequenceHelpers.pdb" 'artifacts/SpeckSequenceHelpers/' -ErrorAction Stop
+          Get-ChildItem 'artifacts/SpeckSequenceHelpers' | ForEach-Object { "Staged $($_.Name)" }
+      - name: Read plugin version
+        id: ver
+        shell: pwsh
+        run: |
+          $m = Select-String -Path src/SpeckSequenceHelpers/Properties/AssemblyInfo.cs -Pattern 'AssemblyFileVersion\("([0-9.]+)"\)'
+          $v = $m.Matches[0].Groups[1].Value
+          "version=$v" >> $env:GITHUB_OUTPUT
+          "Plugin version: $v"
+      - name: Build Inno Setup installer
+        shell: pwsh
+        run: |
+          choco install innosetup --no-progress -y
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" /DAppVersion=${{ steps.ver.outputs.version }} installer\installer.iss
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Upload plugin folder artifact
         uses: actions/upload-artifact@v4
         with:
-          name: SpeckSequenceHelpers
-          path: src/SpeckSequenceHelpers/bin/Release/net8.0-windows/SpeckSequenceHelpers.dll
+          name: SpeckSequenceHelpers-plugin-folder-${{ steps.ver.outputs.version }}
+          path: artifacts/SpeckSequenceHelpers/
+          if-no-files-found: error
+      - name: Upload installer artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SpeckSequenceHelpers-Setup-${{ steps.ver.outputs.version }}
+          path: artifacts/SpeckSequenceHelpers-Setup-*.exe
+          if-no-files-found: error
+
+  release:
+    name: GitHub release (tags)
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [linux-tests, windows]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: SpeckSequenceHelpers-Setup-*
+          merge-multiple: true
+      - name: Extract release notes from CHANGELOG.md
+        run: |
+          VER="${GITHUB_REF_NAME#v}"
+          awk -v ver="$VER" '/^## \[/{p = ($0 ~ "^## \\[" ver "\\]")} /^\[.*\]: /{p=0} p && !/^## \[/' CHANGELOG.md > release-notes.md
+          if ! grep -q '[^[:space:]]' release-notes.md; then
+            echo "::error::CHANGELOG.md has no section for version $VER — add one before tagging" >&2
+            exit 1
+          fi
+          printf '\n---\n\nWindows installer for the Speck Sequence Helpers plugin. Close N.I.N.A. before installing. Interim distribution until the plugin ships via the official N.I.N.A. plugin repository.\n' >> release-notes.md
+          cat release-notes.md
+      - name: Create release with installer
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" SpeckSequenceHelpers-Setup-*.exe \
+            --repo "${GITHUB_REPOSITORY}" \
+            --title "Speck Sequence Helpers ${GITHUB_REF_NAME}" \
+            --notes-file release-notes.md
