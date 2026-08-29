@@ -1,7 +1,7 @@
 # Speck Sequence Helpers
 
 A plugin for [N.I.N.A.](https://nighttime-imaging.eu/) 3.x. It adds the following instructions
-to the advanced sequencer, all under the **Speck Sequence Helpers** category:
+and triggers to the advanced sequencer, all under the **Speck Sequence Helpers** category:
 
 - **Dithered slew and center** — a drop-in replacement for the stock slew and center that
   offsets the target by a small random amount each run, so mosaic panel cycling gets its
@@ -10,6 +10,9 @@ to the advanced sequencer, all under the **Speck Sequence Helpers** category:
   target's, failing the instruction if it is out of tolerance.
 - **Wait for sky brightness** — takes throwaway exposures until the sky reaches a target
   histogram mean, for dawn and dusk sky flats.
+- **Autofocus after pier side change** — a trigger that runs an autofocus before the next
+  light exposure once the mount reports a change of pier side, for mounts that flip during a
+  slew before NINA's meridian flip trigger gets a chance to.
 
 ## Install
 
@@ -107,6 +110,30 @@ chance has gone. Dimming reverses both for dusk.
 
 Needs a connected camera.
 
+## Autofocus after pier side change
+
+A trigger. Some mounts decide to flip during an ordinary slew, before NINA's meridian flip
+trigger would have fired. NINA's flip workflow, and the autofocus it would have run, then
+never happen. On a scope with mirror flop, such as an SCT, the focus shift after that flip
+is large enough to matter.
+
+The trigger watches the pier side the mount reports. When it changes, an autofocus runs
+before the next light exposure, using your profile's autofocus settings. It only fires
+before lights, never before flats, darks, or plate-solve exposures, and it defers while the
+safety monitor reports unsafe. The row shows the last pier side it saw.
+
+It fires on every pier side change, including the one NINA's own meridian flip makes. If
+"Autofocus after flip" is turned on in NINA's meridian flip settings, that flip may
+autofocus twice; the trigger shows a warning on its row when it sees that setting on. Turn
+the NINA option off and let this trigger own post-flip focus in both cases.
+
+With "Use side of pier" turned on in the meridian flip settings, a flip during a slew leaves
+NINA's flip trigger still expecting a flip at the meridian, and this trigger holds off until
+that time has passed, so the autofocus can be delayed by a few minutes. With "Use side of
+pier" off, the hold-off is correct, since NINA really will flip again.
+
+Needs a connected camera, focuser, and mount. There are no settings.
+
 ## Troubleshooting
 
 **The instructions do not appear in the sequencer.** Check that NINA was fully closed during
@@ -119,6 +146,10 @@ a target container.
 **Check rotation fails with "plate solve failed".** The exposure is taken with your profile's
 plate-solve settings, so anything that would break a normal plate solve applies here: wrong
 focal length or pixel size in the profile, an unreachable solver, or too short an exposure.
+
+**Autofocus after pier side change never fires.** Check NINA's mount panel for the reported
+pier side. If it shows Unknown, the driver does not report it and the trigger has nothing to
+watch.
 
 ## Changelog
 

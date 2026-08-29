@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Autofocus after pier side change** — trigger that runs an autofocus before the next
+  light exposure after the mount reports a change of pier side, for mounts that flip during a
+  slew before the meridian flip trigger runs.
+
 ## [1.0.0.1] - 2026-08-29
 
 Initial release.

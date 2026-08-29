@@ -26,12 +26,14 @@ installs itself. It is skipped when `CI` is set.
     src/SpeckSequenceHelpers/          plugin assembly (WPF, NINA references)
       Core/                            logic with no NINA dependencies, unit tested
       Instructions/                    the sequencer instructions and their XAML templates
+      Triggers/                        the sequencer triggers (templates live in Instructions/)
     tests/SpeckSequenceHelpers.Core.Tests/
     installer/installer.iss            Inno Setup script
     scripts/build.sh
 
 `Core/` holds the parts worth testing on their own: `DitherOffsetCalculator`, `AngleMath`,
-and `SkyBrightnessGate`. They use no NINA types, so the test suite runs on Linux.
+`SkyBrightnessGate`, and `PierSideChangeDetector`. They use no NINA types, so the test suite
+runs on Linux.
 
 ## Releasing
 
