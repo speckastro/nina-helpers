@@ -12,8 +12,8 @@ jobs:
     name: Linux build + tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 8.0.x
       - name: Build (EnableWindowsTargeting)
@@ -27,8 +27,8 @@ jobs:
     name: Windows tests + installer
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 8.0.x
       - name: Build
@@ -63,13 +63,13 @@ jobs:
           & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" /DAppVersion=${{ steps.ver.outputs.version }} installer\installer.iss
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Upload plugin folder artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: SpeckSequenceHelpers-plugin-folder-${{ steps.ver.outputs.version }}
           path: artifacts/SpeckSequenceHelpers/
           if-no-files-found: error
       - name: Upload installer artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: SpeckSequenceHelpers-Setup-${{ steps.ver.outputs.version }}
           path: artifacts/SpeckSequenceHelpers-Setup-*.exe
@@ -83,8 +83,31 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v7
+      - name: Verify tag matches AssemblyFileVersion
+        run: |
+          INFO=src/SpeckSequenceHelpers/Properties/AssemblyInfo.cs
+          VER="${GITHUB_REF_NAME#v}"
+          # `|| true` so a missing attribute reaches the error message below instead of
+          # killing the step at the assignment under bash -e.
+          ASM=$(grep -oP 'AssemblyFileVersion\("\K[0-9.]+' "$INFO" || true)
+          ASMV=$(grep -oP 'AssemblyVersion\("\K[0-9.]+' "$INFO" || true)
+          if [ -z "$ASM" ]; then
+            echo "::error::Could not read AssemblyFileVersion from $INFO — was the attribute renamed or removed?" >&2
+            exit 1
+          fi
+          if [ "$VER" != "$ASM" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match AssemblyFileVersion $ASM — the installer would be published under a mismatched version. Bump AssemblyInfo.cs or retag." >&2
+            exit 1
+          fi
+          # The installer name comes from AssemblyFileVersion, but drift between the two
+          # attributes means the shipped DLL reports a different version than the tag.
+          if [ "$ASMV" != "$ASM" ]; then
+            echo "::error::AssemblyVersion $ASMV and AssemblyFileVersion $ASM disagree in $INFO — bump both." >&2
+            exit 1
+          fi
+          echo "Tag matches AssemblyVersion and AssemblyFileVersion: $ASM"
+      - uses: actions/download-artifact@v8
         with:
           pattern: SpeckSequenceHelpers-Setup-*
           merge-multiple: true
