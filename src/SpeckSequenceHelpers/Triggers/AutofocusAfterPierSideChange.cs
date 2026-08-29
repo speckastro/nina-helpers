@@ -42,6 +42,7 @@ namespace SpeckSequenceHelpers.Triggers {
 
         private readonly PierSideChangeDetector detector = new PierSideChangeDetector();
         private bool pending;
+        private bool deferralLogged;
 
         [ImportingConstructor]
         public AutofocusAfterPierSideChange(IProfileService profileService,
@@ -117,6 +118,7 @@ namespace SpeckSequenceHelpers.Triggers {
         public override void Initialize() {
             detector.Reset();
             pending = false;
+            deferralLogged = false;
             Sample();
         }
 
@@ -131,17 +133,24 @@ namespace SpeckSequenceHelpers.Triggers {
             if (!(nextItem is IExposureItem exposureItem)) { return false; }
             if (exposureItem.ImageType != "LIGHT") { return false; }
             if (safetyMonitorMediator.GetInfo() is { Connected: true, IsSafe: false }) {
-                Logger.Info("Autofocus after pier side change - pier side changed but safety monitor reports unsafe; deferring");
+                if (!deferralLogged) {
+                    Logger.Info("Autofocus after pier side change: pier side changed but safety monitor reports unsafe; deferring");
+                    deferralLogged = true;
+                }
                 return false;
             }
 
             var autofocusDuration = TriggerRunner.GetItemsSnapshot().First().GetEstimatedDuration();
             if (ItemUtility.IsTooCloseToMeridianFlip(Parent, autofocusDuration + nextItem.GetEstimatedDuration())) {
-                Logger.Warning("Autofocus after pier side change - autofocus should run, however the meridian flip is too close; deferring");
+                if (!deferralLogged) {
+                    Logger.Warning("Autofocus after pier side change: autofocus should run, however the meridian flip is too close; deferring");
+                    deferralLogged = true;
+                }
                 return false;
             }
 
             pending = false;
+            deferralLogged = false;
             return true;
         }
 
@@ -161,8 +170,9 @@ namespace SpeckSequenceHelpers.Triggers {
             var info = telescopeMediator.GetInfo();
             var side = info != null && info.Connected ? Map(info.SideOfPier) : ObservedPierSide.Unknown;
             if (detector.Observe(side)) {
-                Logger.Info($"Autofocus after pier side change - pier side changed to {side}; autofocus pending before next light");
+                Logger.Info($"Autofocus after pier side change: pier side changed to {side}; autofocus pending before next light");
                 pending = true;
+                deferralLogged = false;
             }
             LastSeenPierSide = detector.LastSeen switch {
                 ObservedPierSide.East => "East",

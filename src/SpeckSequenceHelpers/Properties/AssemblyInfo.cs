@@ -24,10 +24,11 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyMetadata("FeaturedImageURL", "")]
 [assembly: AssemblyMetadata("ScreenshotURL", "")]
 [assembly: AssemblyMetadata("AltScreenshotURL", "")]
-[assembly: AssemblyMetadata("LongDescription", @"Advanced sequencer instructions:
+[assembly: AssemblyMetadata("LongDescription", @"Advanced sequencer instructions and triggers:
 
 * Dithered slew and center - a drop-in replacement for the stock slew and center that aims at a point nudged slightly off the target by a random amount each run, so rapid mosaic panel cycling needs no separate dither. The offset radius comes from your guider dither settings automatically, or from a manual radius.
 * Check rotation - plate solve and compare the measured position angle against the target's position angle. Reports the measurement unobtrusively; fails the instruction if a configured tolerance is exceeded.
-* Wait for sky brightness - repeatedly take throwaway exposures until the histogram mean reaches your target, within tolerance. Target and tolerance are entered as percentages just like the flat wizard, and the equivalent ADU window is shown. Designed for dawn/dusk sky flats; fails if the brightness window is overshot.")]
+* Wait for sky brightness - repeatedly take throwaway exposures until the histogram mean reaches your target, within tolerance. Target and tolerance are entered as percentages just like the flat wizard, and the equivalent ADU window is shown. Designed for dawn/dusk sky flats; fails if the brightness window is overshot.
+* Autofocus after pier side change - a trigger that runs an autofocus before the next light exposure once the mount reports a change of pier side, for mounts that flip during a slew before the meridian flip trigger runs. Warns when NINA's own ""Autofocus after flip"" is also on.")]
 
 [assembly: ComVisible(false)]
