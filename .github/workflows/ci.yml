@@ -121,11 +121,24 @@ jobs:
           fi
           printf '\n---\n\nWindows installer for the Speck Sequence Helpers plugin. Close N.I.N.A. before installing. Interim distribution until the plugin ships via the official N.I.N.A. plugin repository.\n' >> release-notes.md
           cat release-notes.md
-      - name: Create release with installer
+      - name: Create or update release with installer
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "${GITHUB_REF_NAME}" SpeckSequenceHelpers-Setup-*.exe \
-            --repo "${GITHUB_REPOSITORY}" \
-            --title "Speck Sequence Helpers ${GITHUB_REF_NAME}" \
-            --notes-file release-notes.md
+          # Re-pushing a tag (e.g. after a history rewrite) re-runs this job, and
+          # `gh release create` refuses when the release already exists. Refresh it
+          # in place instead so a re-tag is not a build failure.
+          if gh release view "${GITHUB_REF_NAME}" --repo "${GITHUB_REPOSITORY}" >/dev/null 2>&1; then
+            echo "Release ${GITHUB_REF_NAME} exists — updating notes and installer."
+            gh release edit "${GITHUB_REF_NAME}" \
+              --repo "${GITHUB_REPOSITORY}" \
+              --title "Speck Sequence Helpers ${GITHUB_REF_NAME}" \
+              --notes-file release-notes.md
+            gh release upload "${GITHUB_REF_NAME}" SpeckSequenceHelpers-Setup-*.exe \
+              --repo "${GITHUB_REPOSITORY}" --clobber
+          else
+            gh release create "${GITHUB_REF_NAME}" SpeckSequenceHelpers-Setup-*.exe \
+              --repo "${GITHUB_REPOSITORY}" \
+              --title "Speck Sequence Helpers ${GITHUB_REF_NAME}" \
+              --notes-file release-notes.md
+          fi
