@@ -119,25 +119,32 @@ is large enough to matter.
 
 The trigger watches the pier side the mount reports. When it changes, an autofocus runs
 before the next light exposure, using your profile's autofocus settings. It only fires
-before lights, never before flats, darks, or plate-solve exposures, and it defers while the
-safety monitor reports unsafe. The row shows the last pier side it saw.
+before lights, never before flats, darks, or plate-solve exposures, and it holds off while
+the safety monitor reports unsafe or while NINA's meridian flip is too close to fit an
+autofocus in. The row shows the last pier side it saw.
 
 It fires on every pier side change, including the one NINA's own meridian flip makes. If
 "Autofocus after flip" is turned on in NINA's meridian flip settings, that flip may
 autofocus twice; the trigger shows a warning on its row when it sees that setting on. Turn
-the NINA option off and let this trigger own post-flip focus in both cases.
+the NINA option off and let this trigger own post-flip focus in both cases. NINA runs
+triggers in the order they are listed, and child containers' triggers run before their
+parent's, so for this to cover NINA's own flip the trigger must be placed after the
+Meridian Flip trigger — in the same container below it, or in a container above the one
+holding it. Placed before it, the change is only noticed after the first post-flip light,
+which is shot with pre-flip focus.
 
 With "Use side of pier" turned on in the meridian flip settings, a flip during a slew leaves
 NINA's flip trigger still expecting a flip at the meridian, and this trigger holds off until
 that time has passed, so the autofocus can be delayed by a few minutes. With "Use side of
-pier" off, the hold-off is correct, since NINA really will flip again.
+pier" off, NINA will still perform its own flip at the meridian, so holding off is what its
+stock autofocus triggers do too.
 
 Needs a connected camera, focuser, and mount. There are no settings.
 
 ## Troubleshooting
 
-**The instructions do not appear in the sequencer.** Check that NINA was fully closed during
-install, then look under Plugins for load errors.
+**The instructions or the trigger do not appear in the sequencer.** Check that NINA was
+fully closed during install, then look under Plugins for load errors.
 
 **A validation issue is shown on the instruction.** Hover it. The messages name the missing
 piece directly, most often a disconnected camera or guider, or an instruction placed outside

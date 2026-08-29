@@ -31,6 +31,7 @@ namespace SpeckSequenceHelpers.Core {
             return true;
         }
 
+        /// <summary>Forgets the last known side; the next known reading becomes a new baseline.</summary>
         public void Reset() {
             LastSeen = null;
         }

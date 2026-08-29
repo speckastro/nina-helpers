@@ -146,8 +146,9 @@ namespace SpeckSequenceHelpers.Triggers {
         }
 
         public override bool ShouldTriggerAfter(ISequenceItem previousItem, ISequenceItem nextItem) {
-            // Sampling after every item catches a flip and a flip back across two non-light
-            // items (e.g. park/unpark), which before-light sampling alone would miss.
+            // ShouldTrigger already samples before every item; sampling after each item as
+            // well halves the gap between readings, so a flip and flip back across two
+            // items is less likely to slip between samples.
             Sample();
             return false;
         }
