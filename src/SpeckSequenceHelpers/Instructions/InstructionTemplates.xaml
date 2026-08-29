@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:SpeckSequenceHelpers.Instructions"
+    xmlns:triggers="clr-namespace:SpeckSequenceHelpers.Triggers"
     xmlns:nina="clr-namespace:NINA.View.Sequencer;assembly=NINA.Sequencer"
     xmlns:mini="clr-namespace:NINA.View.Sequencer.MiniSequencer;assembly=NINA.Sequencer">
 
@@ -88,5 +89,35 @@
 
     <DataTemplate x:Key="SpeckSequenceHelpers.Instructions.WaitForSkyBrightness_Mini">
         <mini:MiniSequenceItem />
+    </DataTemplate>
+
+    <GeometryGroup x:Key="Speck_AutofocusAfterPierSideChange_SVG">
+        <!-- Two arrows swapping sides over a pier: left arrow pointing right, right arrow pointing left, post below -->
+        <PathGeometry Figures="M 2,6 L 8,6 M 6,4 L 8,6 L 6,8 M 16,10 L 10,10 M 12,8 L 10,10 L 12,12 M 9,13 L 9,17 M 6,17 L 12,17" />
+    </GeometryGroup>
+
+    <DataTemplate DataType="{x:Type triggers:AutofocusAfterPierSideChange}">
+        <nina:SequenceBlockView>
+            <nina:SequenceBlockView.SequenceItemContent>
+                <TextBlock VerticalAlignment="Center" FontStyle="Italic" Text="{Binding Warning}" />
+            </nina:SequenceBlockView.SequenceItemContent>
+            <nina:SequenceBlockView.SequenceItemProgressContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="Pier side" />
+                    <TextBlock VerticalAlignment="Center" Margin="5,0,0,0" Text="{Binding LastSeenPierSide}" />
+                </StackPanel>
+            </nina:SequenceBlockView.SequenceItemProgressContent>
+        </nina:SequenceBlockView>
+    </DataTemplate>
+
+    <DataTemplate x:Key="SpeckSequenceHelpers.Triggers.AutofocusAfterPierSideChange_Mini">
+        <mini:MiniTrigger>
+            <mini:MiniTrigger.TriggerProgressContent>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Text="Pier side" />
+                    <TextBlock VerticalAlignment="Center" Margin="5,0,0,0" Text="{Binding LastSeenPierSide}" />
+                </StackPanel>
+            </mini:MiniTrigger.TriggerProgressContent>
+        </mini:MiniTrigger>
     </DataTemplate>
 </ResourceDictionary>
