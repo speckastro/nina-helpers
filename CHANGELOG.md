@@ -13,6 +13,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   light exposure after the mount reports a change of pier side, for mounts that flip during a
   slew before the meridian flip trigger runs.
 
+### Changed
+
+- **Wait for sky brightness** — Gain and Offset are left blank to use the profile default,
+  which is shown dimmed in the box the way NINA's Take Exposure does, instead of entering
+  `-1`. Cameras with a fixed gain list get a dropdown. Saved sequences load unchanged.
+
 ## [1.0.0.1] - 2026-08-29
 
 Initial release.

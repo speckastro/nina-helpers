@@ -96,12 +96,17 @@ ADU window for the connected camera next to the fields.
 | --- | --- | --- |
 | Direction | Brightening | Brightening for dawn, Dimming for dusk |
 | Exposure (s) | 1 | Length of each throwaway exposure |
-| Gain | -1 | -1 uses your profile's default gain |
-| Offset | -1 | -1 uses your profile's default offset |
+| Gain | blank | Blank uses your profile's default gain, shown dimmed in the box |
+| Offset | blank | Blank uses your profile's default offset, shown dimmed in the box |
 | Bin | 1 | Applied to both axes |
 | Interval (s) | 30 | Wait between measurements |
 | Target (%) | 50 | Histogram mean target, percent of full scale |
 | Tolerance (%) | 10 | Accepted deviation, percent of the target |
+
+Cameras that report a fixed list of gains get a dropdown instead of a box, with the default
+as the first entry in parentheses. Offset is hidden when the connected camera cannot set
+it. The dimmed hint reads "(Camera)" when the profile itself has no default and the
+camera's own setting applies.
 
 Direction tells the instruction which way the sky is moving, so a measurement outside the
 window can be read as either too early or too late. Set to Brightening, a measurement below
