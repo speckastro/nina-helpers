@@ -4,6 +4,7 @@ using NINA.Core.Model;
 using NINA.Core.Model.Equipment;
 using NINA.Core.Utility;
 using NINA.Core.Utility.Notification;
+using NINA.Equipment.Equipment.MyCamera;
 using NINA.Equipment.Interfaces.Mediator;
 using NINA.Equipment.Model;
 using NINA.Image.ImageAnalysis;
@@ -32,6 +33,7 @@ namespace SpeckSequenceHelpers.Instructions {
         public WaitForSkyBrightness(ICameraMediator cameraMediator, IImagingMediator imagingMediator) {
             this.cameraMediator = cameraMediator;
             this.imagingMediator = imagingMediator;
+            CameraInfo = cameraMediator?.GetInfo();
             UpdateAduSummary();
         }
 
@@ -55,6 +57,17 @@ namespace SpeckSequenceHelpers.Instructions {
         }
 
         public static GateDirection[] DirectionChoices { get; } = { GateDirection.Brightening, GateDirection.Dimming };
+
+        private CameraInfo cameraInfo;
+
+        /// <summary>Latest camera state, refreshed on validation; the row binds to it for defaults and capabilities.</summary>
+        public CameraInfo CameraInfo {
+            get => cameraInfo;
+            private set {
+                cameraInfo = value;
+                RaisePropertyChanged();
+            }
+        }
 
         private double exposureTime = 1;
 
@@ -247,7 +260,7 @@ namespace SpeckSequenceHelpers.Instructions {
         }
 
         private void UpdateAduSummary() {
-            var info = cameraMediator?.GetInfo();
+            var info = CameraInfo;
             if (info?.Connected != true || info.BitDepth <= 0) {
                 AduSummary = "connect camera for ADU values";
                 return;
@@ -267,9 +280,17 @@ namespace SpeckSequenceHelpers.Instructions {
 
         public bool Validate() {
             var i = new List<string>();
-            var info = cameraMediator.GetInfo();
+            CameraInfo = cameraMediator.GetInfo();
+            var info = CameraInfo;
             if (info?.Connected != true) {
                 i.Add("Camera is not connected");
+            } else {
+                if (info.CanSetGain && Gain > -1 && (Gain < info.GainMin || Gain > info.GainMax)) {
+                    i.Add($"Gain must be between {info.GainMin} and {info.GainMax}");
+                }
+                if (info.CanSetOffset && Offset > -1 && (Offset < info.OffsetMin || Offset > info.OffsetMax)) {
+                    i.Add($"Offset must be between {info.OffsetMin} and {info.OffsetMax}");
+                }
             }
 
             var targetValid = double.IsFinite(TargetPercent) && TargetPercent > 0 && TargetPercent <= 100;
