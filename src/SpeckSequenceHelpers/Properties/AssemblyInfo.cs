@@ -24,9 +24,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyMetadata("FeaturedImageURL", "")]
 [assembly: AssemblyMetadata("ScreenshotURL", "")]
 [assembly: AssemblyMetadata("AltScreenshotURL", "")]
-[assembly: AssemblyMetadata("LongDescription", @"Three advanced sequencer instructions:
+[assembly: AssemblyMetadata("LongDescription", @"Advanced sequencer instructions:
 
-* Dithered slew and center - NINA's Center with the target displaced by a small random offset each run, so rapid mosaic panel cycling needs no separate dither. Offset amplitude comes from your guider dither settings automatically, or a manual radius.
+* Dithered slew and center - a drop-in replacement for the stock slew and center that aims at a point nudged slightly off the target by a random amount each run, so rapid mosaic panel cycling needs no separate dither. The offset radius comes from your guider dither settings automatically, or from a manual radius.
 * Check rotation - plate solve and compare the measured position angle against the target's position angle. Reports the measurement unobtrusively; fails the instruction if a configured tolerance is exceeded.
 * Wait for sky brightness - repeatedly take throwaway exposures until the histogram mean reaches your target, within tolerance. Target and tolerance are entered as percentages just like the flat wizard, and the equivalent ADU window is shown. Designed for dawn/dusk sky flats; fails if the brightness window is overshot.")]
 

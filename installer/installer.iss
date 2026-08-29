@@ -32,7 +32,7 @@ Source: "..\artifacts\SpeckSequenceHelpers\*"; DestDir: "{app}"; Flags: recurses
 
 [Messages]
 SetupWindowTitle=Speck Sequence Helpers Setup
-WelcomeLabel2=This will install the Speck Sequence Helpers plugin ([name/ver]) into your local N.I.N.A. plugin folder.%n%nClose N.I.N.A. before continuing — plugin files cannot be replaced while N.I.N.A. is running.%n%nAfter installation, start N.I.N.A. and find the new instructions under the Advanced Sequencer.
+WelcomeLabel2=This will install the Speck Sequence Helpers plugin ([name/ver]) into your local N.I.N.A. plugin folder.%n%nClose N.I.N.A. before continuing — plugin files cannot be replaced while N.I.N.A. is running.%n%nAfter installation, start N.I.N.A. and find the new instructions under the Speck Sequence Helpers category in the Advanced Sequencer.
 
 [UninstallDelete]
 ; The plugin writes nothing into its own folder at runtime, but remove any stray files on uninstall.
