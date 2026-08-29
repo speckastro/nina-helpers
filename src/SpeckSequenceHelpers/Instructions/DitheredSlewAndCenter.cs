@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 namespace SpeckSequenceHelpers.Instructions {
 
     [ExportMetadata("Name", "Dithered slew and center")]
-    [ExportMetadata("Description", "NINA's Center, but the target is displaced by a small random offset each run, so cycling mosaic panels dithers without a separate guider dither. Offset radius comes from the guider dither settings, or a manual radius.")]
+    [ExportMetadata("Description", "A drop-in replacement for the stock slew and center that aims at a point nudged slightly off the target by a random amount each run, so cycling mosaic panels dithers without a separate guider dither. Offset radius comes from the guider dither settings, or a manual radius.")]
     [ExportMetadata("Icon", "Speck_DitheredSlewAndCenter_SVG")]
     [ExportMetadata("Category", "Speck Sequence Helpers")]
     [Export(typeof(ISequenceItem))]
