@@ -12,8 +12,8 @@ jobs:
     name: Linux build + tests
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-dotnet@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
           dotnet-version: 8.0.x
       - name: Build (EnableWindowsTargeting)
@@ -27,8 +27,8 @@ jobs:
     name: Windows tests + installer
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-dotnet@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
         with:
           dotnet-version: 8.0.x
       - name: Build
@@ -63,13 +63,13 @@ jobs:
           & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" /DAppVersion=${{ steps.ver.outputs.version }} installer\installer.iss
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Upload plugin folder artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: SpeckSequenceHelpers-plugin-folder-${{ steps.ver.outputs.version }}
           path: artifacts/SpeckSequenceHelpers/
           if-no-files-found: error
       - name: Upload installer artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: SpeckSequenceHelpers-Setup-${{ steps.ver.outputs.version }}
           path: artifacts/SpeckSequenceHelpers-Setup-*.exe
@@ -83,7 +83,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Verify tag matches AssemblyFileVersion
         run: |
           INFO=src/SpeckSequenceHelpers/Properties/AssemblyInfo.cs
@@ -107,7 +107,7 @@ jobs:
             exit 1
           fi
           echo "Tag matches AssemblyVersion and AssemblyFileVersion: $ASM"
-      - uses: actions/download-artifact@v8
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           pattern: SpeckSequenceHelpers-Setup-*
           merge-multiple: true
