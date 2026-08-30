@@ -7,11 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0.0] - 2026-08-30
+
 ### Added
 
 - **Autofocus after pier side change** — trigger that runs an autofocus before the next
   light exposure after the mount reports a change of pier side, for mounts that flip during a
   slew before the meridian flip trigger runs.
+
+### Changed
+
+- **Wait for sky brightness** — Gain and Offset are left blank to use the profile default,
+  which is shown dimmed in the box the way NINA's Take Exposure does; previously the default
+  was written as `-1`. Cameras with a fixed gain list get a dropdown, and a gain or offset
+  outside the camera's range is reported as a validation issue. Saved sequences load
+  unchanged.
 
 ## [1.0.0.1] - 2026-08-29
 
@@ -19,7 +29,7 @@ Initial release.
 
 ### Added
 
-- **Dithered slew and center** — N.I.N.A.'s Center with the target displaced by a small
+- **Dithered slew and center** — NINA's Center with the target displaced by a small
   random offset each run, so rapid mosaic panel cycling needs no separate dither.
 - **Check rotation** — plate solve and compare the measured position angle against the
   target's position angle, failing the instruction if a tolerance is exceeded.

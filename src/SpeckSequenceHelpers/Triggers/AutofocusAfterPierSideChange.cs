@@ -3,6 +3,7 @@ using NINA.Core.Enum;
 using NINA.Core.Model;
 using NINA.Core.Utility;
 using NINA.Equipment.Interfaces.Mediator;
+using NINA.Equipment.Model;
 using NINA.Profile.Interfaces;
 using NINA.Sequencer.Container;
 using NINA.Sequencer.Interfaces;
@@ -131,7 +132,7 @@ namespace SpeckSequenceHelpers.Triggers {
             if (!pending) { return false; }
             if (nextItem == null) { return false; }
             if (!(nextItem is IExposureItem exposureItem)) { return false; }
-            if (exposureItem.ImageType != "LIGHT") { return false; }
+            if (exposureItem.ImageType != CaptureSequence.ImageTypes.LIGHT) { return false; }
             if (safetyMonitorMediator.GetInfo() is { Connected: true, IsSafe: false }) {
                 if (!deferralLogged) {
                     Logger.Info("Autofocus after pier side change: pier side changed but safety monitor reports unsafe; deferring");

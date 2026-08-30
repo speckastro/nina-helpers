@@ -5,7 +5,20 @@
     xmlns:local="clr-namespace:SpeckSequenceHelpers.Instructions"
     xmlns:triggers="clr-namespace:SpeckSequenceHelpers.Triggers"
     xmlns:nina="clr-namespace:NINA.View.Sequencer;assembly=NINA.Sequencer"
-    xmlns:mini="clr-namespace:NINA.View.Sequencer.MiniSequencer;assembly=NINA.Sequencer">
+    xmlns:mini="clr-namespace:NINA.View.Sequencer.MiniSequencer;assembly=NINA.Sequencer"
+    xmlns:ninactrl="clr-namespace:NINA.CustomControlLibrary;assembly=NINA.CustomControlLibrary"
+    xmlns:conv="clr-namespace:NINA.Core.Utility.Converters;assembly=NINA.Core"
+    xmlns:rules="clr-namespace:NINA.Core.Utility.ValidationRules;assembly=NINA.Core"
+    xmlns:util="clr-namespace:NINA.Core.Utility;assembly=NINA.Core">
+
+    <conv:MinusOneToEmptyStringConverter x:Key="Speck_MinusOneToEmptyStringConverter" />
+    <conv:CameraDefaultValueConverter x:Key="Speck_CameraDefaultValueConverter" />
+    <conv:MinusOneToBaseValueConverter x:Key="Speck_MinusOneToBaseValueConverter" />
+    <conv:IntListToTextBlockListConverter x:Key="Speck_IntListToTextBlockListConverter" />
+    <conv:CollectionContainsItemsToVisibilityConverter x:Key="Speck_CollectionContainsItemsToVisibilityConverter" />
+    <conv:InverseCollectionContainsItemsToVisibilityConverter x:Key="Speck_InverseCollectionContainsItemsToVisibilityConverter" />
+    <conv:BooleanOrToVisibilityCollapsedMultiConverter x:Key="Speck_BooleanOrToVisibilityCollapsedMultiConverter" />
+    <conv:InverseBooleanConverter x:Key="Speck_InverseBooleanConverter" />
 
     <GeometryGroup x:Key="Speck_DitheredSlewAndCenter_SVG">
         <EllipseGeometry Center="9,9" RadiusX="8" RadiusY="8" />
@@ -63,16 +76,100 @@
         <nina:SequenceBlockView>
             <nina:SequenceBlockView.SequenceItemContent>
                 <StackPanel Orientation="Horizontal">
+                    <StackPanel.Resources>
+                        <util:BindingProxy x:Key="Speck_SkyCameraInfo" Data="{Binding CameraInfo}" />
+                    </StackPanel.Resources>
                     <TextBlock VerticalAlignment="Center" Text="Direction" />
                     <ComboBox Margin="5,0,0,0"
                               ItemsSource="{Binding Source={x:Static local:WaitForSkyBrightness.DirectionChoices}}"
                               SelectedItem="{Binding Direction}" />
                     <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="Exposure (s)" />
                     <TextBox MinWidth="35" Margin="5,0,0,0" TextAlignment="Right" Text="{Binding ExposureTime}" />
-                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="Gain" />
-                    <TextBox MinWidth="35" Margin="5,0,0,0" TextAlignment="Right" Text="{Binding Gain}" />
-                    <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="Offset" />
-                    <TextBox MinWidth="35" Margin="5,0,0,0" TextAlignment="Right" Text="{Binding Offset}" />
+                    <!-- Gain: dropdown when the camera reports a discrete gain list -->
+                    <StackPanel Orientation="Horizontal"
+                                Visibility="{Binding CameraInfo.Gains, Converter={StaticResource Speck_CollectionContainsItemsToVisibilityConverter}, FallbackValue=Collapsed}">
+                        <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="Gain" />
+                        <ComboBox Margin="5,0,0,0"
+                                  DisplayMemberPath="Text"
+                                  IsSynchronizedWithCurrentItem="True"
+                                  SelectedValuePath="Text">
+                            <ComboBox.ItemsSource>
+                                <CompositeCollection>
+                                    <TextBlock Text="{Binding Source={StaticResource Speck_SkyCameraInfo}, Path=Data.DefaultGain, UpdateSourceTrigger=PropertyChanged, StringFormat=({0})}" />
+                                    <CollectionContainer Collection="{Binding Source={StaticResource Speck_SkyCameraInfo}, Path=Data.Gains, Converter={StaticResource Speck_IntListToTextBlockListConverter}}" />
+                                </CompositeCollection>
+                            </ComboBox.ItemsSource>
+                            <ComboBox.SelectedValue>
+                                <MultiBinding Converter="{StaticResource Speck_MinusOneToBaseValueConverter}"
+                                              Mode="TwoWay"
+                                              UpdateSourceTrigger="PropertyChanged">
+                                    <Binding Mode="TwoWay" Path="Gain" UpdateSourceTrigger="PropertyChanged" />
+                                    <Binding Mode="OneWay" Path="CameraInfo.DefaultGain" UpdateSourceTrigger="PropertyChanged" />
+                                </MultiBinding>
+                            </ComboBox.SelectedValue>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <!-- Gain: free entry, blank means the profile default -->
+                    <StackPanel Orientation="Horizontal"
+                                Visibility="{Binding CameraInfo.Gains, Converter={StaticResource Speck_InverseCollectionContainsItemsToVisibilityConverter}, FallbackValue=Visible}">
+                        <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="Gain" />
+                        <ninactrl:HintTextBox MinWidth="40"
+                                              Margin="5,0,0,0"
+                                              VerticalAlignment="Center"
+                                              HorizontalContentAlignment="Right"
+                                              VerticalContentAlignment="Center"
+                                              TextAlignment="Right"
+                                              HintText="{Binding CameraInfo.DefaultGain, Mode=OneWay, Converter={StaticResource Speck_CameraDefaultValueConverter}, UpdateSourceTrigger=PropertyChanged}">
+                            <ninactrl:HintTextBox.Text>
+                                <Binding Path="Gain"
+                                         Mode="TwoWay"
+                                         Converter="{StaticResource Speck_MinusOneToEmptyStringConverter}"
+                                         UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <rules:ShortRangeRule>
+                                            <rules:ShortRangeRule.ValidRange>
+                                                <rules:ShortRangeChecker Minimum="-1" Maximum="32767" />
+                                            </rules:ShortRangeRule.ValidRange>
+                                        </rules:ShortRangeRule>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </ninactrl:HintTextBox.Text>
+                        </ninactrl:HintTextBox>
+                    </StackPanel>
+
+                    <!-- Offset: hidden only when a connected camera cannot set it -->
+                    <StackPanel Orientation="Horizontal">
+                        <StackPanel.Visibility>
+                            <MultiBinding Converter="{StaticResource Speck_BooleanOrToVisibilityCollapsedMultiConverter}" FallbackValue="Visible">
+                                <Binding Path="CameraInfo.Connected" Converter="{StaticResource Speck_InverseBooleanConverter}" />
+                                <Binding Path="CameraInfo.CanSetOffset" />
+                            </MultiBinding>
+                        </StackPanel.Visibility>
+                        <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="Offset" />
+                        <ninactrl:HintTextBox MinWidth="40"
+                                              Margin="5,0,0,0"
+                                              VerticalAlignment="Center"
+                                              HorizontalContentAlignment="Right"
+                                              VerticalContentAlignment="Center"
+                                              TextAlignment="Right"
+                                              HintText="{Binding CameraInfo.DefaultOffset, Mode=OneWay, Converter={StaticResource Speck_CameraDefaultValueConverter}, UpdateSourceTrigger=PropertyChanged}">
+                            <ninactrl:HintTextBox.Text>
+                                <Binding Path="Offset"
+                                         Mode="TwoWay"
+                                         Converter="{StaticResource Speck_MinusOneToEmptyStringConverter}"
+                                         UpdateSourceTrigger="PropertyChanged">
+                                    <Binding.ValidationRules>
+                                        <rules:ShortRangeRule>
+                                            <rules:ShortRangeRule.ValidRange>
+                                                <rules:ShortRangeChecker Minimum="-1" Maximum="32767" />
+                                            </rules:ShortRangeRule.ValidRange>
+                                        </rules:ShortRangeRule>
+                                    </Binding.ValidationRules>
+                                </Binding>
+                            </ninactrl:HintTextBox.Text>
+                        </ninactrl:HintTextBox>
+                    </StackPanel>
                     <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="Bin" />
                     <TextBox MinWidth="25" Margin="5,0,0,0" TextAlignment="Right" Text="{Binding Binning}" />
                     <TextBlock VerticalAlignment="Center" Margin="10,0,0,0" Text="Interval (s)" />

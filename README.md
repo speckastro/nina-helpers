@@ -96,12 +96,17 @@ ADU window for the connected camera next to the fields.
 | --- | --- | --- |
 | Direction | Brightening | Brightening for dawn, Dimming for dusk |
 | Exposure (s) | 1 | Length of each throwaway exposure |
-| Gain | -1 | -1 uses your profile's default gain |
-| Offset | -1 | -1 uses your profile's default offset |
+| Gain | blank | Blank uses your profile's default gain, shown dimmed in the box |
+| Offset | blank | Blank uses your profile's default offset, shown dimmed in the box |
 | Bin | 1 | Applied to both axes |
 | Interval (s) | 30 | Wait between measurements |
 | Target (%) | 50 | Histogram mean target, percent of full scale |
 | Tolerance (%) | 10 | Accepted deviation, percent of the target |
+
+Cameras that report a fixed list of gains get a dropdown instead of a box, with the default
+as the first entry in parentheses. Offset is hidden when the connected camera cannot set
+it. The dimmed hint reads "(Camera)" when the profile itself has no default and the
+camera's own setting applies.
 
 Direction tells the instruction which way the sky is moving, so a measurement outside the
 window can be read as either too early or too late. Set to Brightening, a measurement below
@@ -112,7 +117,7 @@ Needs a connected camera.
 
 ## Autofocus after pier side change
 
-A trigger. Some mounts decide to flip during an ordinary slew, before NINA's meridian flip
+A trigger. Some mounts flip during an ordinary slew, before NINA's meridian flip
 trigger would have fired. NINA's flip workflow, and the autofocus it would have run, then
 never happen. On a scope with mirror flop, such as an SCT, the focus shift after that flip
 is large enough to matter.
@@ -126,7 +131,7 @@ autofocus in. The row shows the last pier side it saw.
 It fires on every pier side change, including the one NINA's own meridian flip makes. If
 "Autofocus after flip" is turned on in NINA's meridian flip settings, that flip may
 autofocus twice; the trigger shows a warning on its row when it sees that setting on. Turn
-the NINA option off and let this trigger own post-flip focus in both cases. NINA runs
+the NINA option off and let this trigger handle post-flip focus in both cases. NINA runs
 triggers in the order they are listed, and child containers' triggers run before their
 parent's, so for this to cover NINA's own flip the trigger must be placed after the
 Meridian Flip trigger — in the same container below it, or in a container above the one
@@ -146,9 +151,9 @@ Needs a connected camera, focuser, and mount. There are no settings.
 **The instructions or the trigger do not appear in the sequencer.** Check that NINA was
 fully closed during install, then look under Plugins for load errors.
 
-**A validation issue is shown on the instruction.** Hover it. The messages name the missing
-piece directly, most often a disconnected camera or guider, or an instruction placed outside
-a target container.
+**A validation issue is shown on an instruction or the trigger.** Hover it. The messages name
+the missing piece directly, most often a disconnected camera, guider, focuser, or mount, or
+an instruction placed outside a target container.
 
 **Check rotation fails with "plate solve failed".** The exposure is taken with your profile's
 plate-solve settings, so anything that would break a normal plate solve applies here: wrong
