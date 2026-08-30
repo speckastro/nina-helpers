@@ -117,7 +117,7 @@ Needs a connected camera.
 
 ## Autofocus after pier side change
 
-A trigger. Some mounts decide to flip during an ordinary slew, before NINA's meridian flip
+A trigger. Some mounts flip during an ordinary slew, before NINA's meridian flip
 trigger would have fired. NINA's flip workflow, and the autofocus it would have run, then
 never happen. On a scope with mirror flop, such as an SCT, the focus shift after that flip
 is large enough to matter.
@@ -131,7 +131,7 @@ autofocus in. The row shows the last pier side it saw.
 It fires on every pier side change, including the one NINA's own meridian flip makes. If
 "Autofocus after flip" is turned on in NINA's meridian flip settings, that flip may
 autofocus twice; the trigger shows a warning on its row when it sees that setting on. Turn
-the NINA option off and let this trigger own post-flip focus in both cases. NINA runs
+the NINA option off and let this trigger handle post-flip focus in both cases. NINA runs
 triggers in the order they are listed, and child containers' triggers run before their
 parent's, so for this to cover NINA's own flip the trigger must be placed after the
 Meridian Flip trigger — in the same container below it, or in a container above the one
@@ -151,9 +151,9 @@ Needs a connected camera, focuser, and mount. There are no settings.
 **The instructions or the trigger do not appear in the sequencer.** Check that NINA was
 fully closed during install, then look under Plugins for load errors.
 
-**A validation issue is shown on the instruction.** Hover it. The messages name the missing
-piece directly, most often a disconnected camera or guider, or an instruction placed outside
-a target container.
+**A validation issue is shown on an instruction or the trigger.** Hover it. The messages name
+the missing piece directly, most often a disconnected camera, guider, focuser, or mount, or
+an instruction placed outside a target container.
 
 **Check rotation fails with "plate solve failed".** The exposure is taken with your profile's
 plate-solve settings, so anything that would break a normal plate solve applies here: wrong

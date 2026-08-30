@@ -3,11 +3,11 @@ using System.Runtime.InteropServices;
 
 [assembly: Guid("c66fa242-868a-47c0-ad62-54d3439af382")]
 
-[assembly: AssemblyVersion("1.0.0.1")]
-[assembly: AssemblyFileVersion("1.0.0.1")]
+[assembly: AssemblyVersion("1.1.0.0")]
+[assembly: AssemblyFileVersion("1.1.0.0")]
 
 [assembly: AssemblyTitle("Speck Sequence Helpers")]
-[assembly: AssemblyDescription("Advanced sequencer helpers: dithered slew-and-center for mosaic panel cycling, plate-solved rotation checks, and histogram-mean gating for flats")]
+[assembly: AssemblyDescription("Advanced sequencer helpers: dithered slew-and-center for mosaic panel cycling, plate-solved rotation checks, histogram-mean gating for flats, and an autofocus trigger for mounts that flip during a slew")]
 
 [assembly: AssemblyCompany("Speck Astro")]
 [assembly: AssemblyProduct("Speck Sequence Helpers")]
@@ -19,7 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyMetadata("LicenseURL", "https://www.mozilla.org/en-US/MPL/2.0/")]
 [assembly: AssemblyMetadata("Repository", "https://github.com/speckastro/nina-helpers")]
 
-[assembly: AssemblyMetadata("Tags", "Sequencer,Mosaic,Dither,Rotation,Flats")]
+[assembly: AssemblyMetadata("Tags", "Sequencer,Mosaic,Dither,Rotation,Flats,Autofocus,Meridian Flip")]
 [assembly: AssemblyMetadata("ChangelogURL", "https://github.com/speckastro/nina-helpers/blob/main/CHANGELOG.md")]
 [assembly: AssemblyMetadata("FeaturedImageURL", "")]
 [assembly: AssemblyMetadata("ScreenshotURL", "")]
